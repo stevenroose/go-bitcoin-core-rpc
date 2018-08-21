@@ -13,12 +13,10 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
-	"math"
 	"net/http"
 	"net/url"
 	"sync"
 	"sync/atomic"
-	"time"
 
 	"github.com/btcsuite/btcd/btcjson"
 )
@@ -40,10 +38,6 @@ const (
 	// sendPostBufferSize is the number of elements the HTTP POST send
 	// channel can queue before blocking.
 	sendPostBufferSize = 100
-
-	// connectionRetryInterval is the amount of time to wait in between
-	// retries when automatically reconnecting to an RPC server.
-	connectionRetryInterval = time.Second * 5
 )
 
 // sendPostDetails houses an HTTP POST request to send to an RPC server as well
@@ -86,13 +80,6 @@ type Client struct {
 	// POST mode.
 	httpClient *http.Client
 
-	// mtx is a mutex to protect access to connection related fields.
-	mtx sync.Mutex
-
-	// retryCount holds the number of times the client has tried to
-	// reconnect to the RPC server.
-	retryCount int64
-
 	// Track command and their response channels by ID.
 	requestLock sync.Mutex
 	requestMap  map[uint64]*list.Element
@@ -112,54 +99,6 @@ type Client struct {
 // being made.
 func (c *Client) NextID() uint64 {
 	return atomic.AddUint64(&c.id, 1)
-}
-
-// addRequest associates the passed jsonRequest with its id.  This allows the
-// response from the remote server to be unmarshalled to the appropriate type
-// and sent to the specified channel when it is received.
-//
-// If the client has already begun shutting down, ErrClientShutdown is returned
-// and the request is not added.
-//
-// This function is safe for concurrent access.
-func (c *Client) addRequest(jReq *jsonRequest) error {
-	c.requestLock.Lock()
-	defer c.requestLock.Unlock()
-
-	// A non-blocking read of the shutdown channel with the request lock
-	// held avoids adding the request to the client's internal data
-	// structures if the client is in the process of shutting down (and
-	// has not yet grabbed the request lock), or has finished shutdown
-	// already (responding to each outstanding request with
-	// ErrClientShutdown).
-	select {
-	case <-c.shutdown:
-		return ErrClientShutdown
-	default:
-	}
-
-	element := c.requestList.PushBack(jReq)
-	c.requestMap[jReq.id] = element
-	return nil
-}
-
-// removeRequest returns and removes the jsonRequest which contains the response
-// channel and original method associated with the passed id or nil if there is
-// no association.
-//
-// This function is safe for concurrent access.
-func (c *Client) removeRequest(id uint64) *jsonRequest {
-	c.requestLock.Lock()
-	defer c.requestLock.Unlock()
-
-	element := c.requestMap[id]
-	if element != nil {
-		delete(c.requestMap, id)
-		request := c.requestList.Remove(element).(*jsonRequest)
-		return request
-	}
-
-	return nil
 }
 
 // removeAllRequests removes all the jsonRequests which contain the response
@@ -197,42 +136,6 @@ func (r rawResponse) result() (result []byte, err error) {
 	return r.Result, nil
 }
 
-// handleMessage is the main handler for incoming notifications and responses.
-func (c *Client) handleMessage(msg []byte) {
-	var resp rawResponse
-	err := json.Unmarshal(msg, &resp)
-	if err != nil {
-		log.Warnf("Remote server sent invalid message: %v", err)
-		return
-	}
-
-	// ensure that in.ID can be converted to an integer without loss of precision
-	if resp.ID == nil || *resp.ID < 0 || *resp.ID != math.Trunc(*resp.ID) {
-		log.Warn("Malformed response: invalid identifier")
-		return
-	}
-
-	if resp.Result == nil && resp.Error == nil {
-		log.Warn("Malformed response: missing result and error")
-		return
-	}
-
-	id := uint64(*resp.ID)
-	log.Tracef("Received response for id %d (result %s)", id, resp.Result)
-	request := c.removeRequest(id)
-
-	// Nothing more to do if there is no request associated with this reply.
-	if request == nil || request.responseChan == nil {
-		log.Warnf("Received unexpected reply: %s (id %d)", resp.Result,
-			id)
-		return
-	}
-
-	// Deliver the response.
-	result, err := resp.result()
-	request.responseChan <- &response{result: result, err: err}
-}
-
 // handleSendPostMessage handles performing the passed HTTP request, reading the
 // result, unmarshalling it, and delivering the unmarshalled result to the
 // provided response channel.
@@ -247,7 +150,7 @@ func (c *Client) handleSendPostMessage(details *sendPostDetails) {
 
 	// Read the raw bytes and close the response.
 	respBytes, err := ioutil.ReadAll(httpResponse.Body)
-	httpResponse.Body.Close()
+	_ = httpResponse.Body.Close()
 	if err != nil {
 		err = fmt.Errorf("error reading json reply: %v", err)
 		jReq.responseChan <- &response{err: err}
