@@ -23,16 +23,6 @@ const (
 	// server that supports wallet commands.
 	UFWalletOnly UsageFlag = 1 << iota
 
-	// UFWebsocketOnly indicates that the command can only be used when
-	// communicating with an RPC server over websockets.  This typically
-	// applies to notifications and notification registration functions
-	// since neiher makes since when using a single-shot HTTP-POST request.
-	UFWebsocketOnly
-
-	// UFNotification indicates that the command is actually a notification.
-	// This means when it is marshalled, the ID must be nil.
-	UFNotification
-
 	// highestUsageFlagBit is the maximum usage flag bit and is used in the
 	// stringer and tests to ensure all of the above constants have been
 	// tested.
@@ -41,9 +31,7 @@ const (
 
 // Map of UsageFlag values back to their constant names for pretty printing.
 var usageFlagStrings = map[UsageFlag]string{
-	UFWalletOnly:    "UFWalletOnly",
-	UFWebsocketOnly: "UFWebsocketOnly",
-	UFNotification:  "UFNotification",
+	UFWalletOnly: "UFWalletOnly",
 }
 
 // String returns the UsageFlag in human-readable form.

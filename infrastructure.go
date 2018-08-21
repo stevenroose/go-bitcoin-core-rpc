@@ -22,11 +22,6 @@ import (
 )
 
 var (
-	// ErrInvalidAuth is an error to describe the condition where the client
-	// is either unable to authenticate or the specified endpoint is
-	// incorrect.
-	ErrInvalidAuth = errors.New("authentication failure")
-
 	// ErrClientShutdown is an error to describe the condition where the
 	// client is either already shutdown, or in the process of shutting
 	// down.  Any outstanding futures when a client shutdown occurs will
@@ -82,7 +77,6 @@ type Client struct {
 
 	// Track command and their response channels by ID.
 	requestLock sync.Mutex
-	requestMap  map[uint64]*list.Element
 	requestList *list.List
 
 	// Networking infrastructure.
@@ -99,15 +93,6 @@ type Client struct {
 // being made.
 func (c *Client) NextID() uint64 {
 	return atomic.AddUint64(&c.id, 1)
-}
-
-// removeAllRequests removes all the jsonRequests which contain the response
-// channels for outstanding requests.
-//
-// This function MUST be called with the request lock held.
-func (c *Client) removeAllRequests() {
-	c.requestMap = make(map[uint64]*list.Element)
-	c.requestList.Init()
 }
 
 // rawResponse is a partially-unmarshaled JSON-RPC response.  For this
@@ -355,7 +340,7 @@ func (c *Client) Shutdown() {
 			err:    ErrClientShutdown,
 		}
 	}
-	c.removeAllRequests()
+	c.requestList.Init()
 }
 
 // start begins processing input and output messages.
@@ -481,7 +466,6 @@ func New(config *ConnConfig) (*Client, error) {
 	client := &Client{
 		config:       config,
 		httpClient:   httpClient,
-		requestMap:   make(map[uint64]*list.Element),
 		requestList:  list.New(),
 		sendPostChan: make(chan *sendPostDetails, sendPostBufferSize),
 		shutdown:     make(chan struct{}),

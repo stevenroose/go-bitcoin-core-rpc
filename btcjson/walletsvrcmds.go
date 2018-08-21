@@ -164,6 +164,22 @@ func NewGetBalanceCmd(account *string, minConf *int) *GetBalanceCmd {
 	}
 }
 
+// GetUnconfirmedBalanceCmd defines the getunconfirmedbalance JSON-RPC command.
+type GetUnconfirmedBalanceCmd struct {
+	Account *string
+}
+
+// NewGetUnconfirmedBalanceCmd returns a new instance which can be used to issue
+// a getunconfirmedbalance JSON-RPC command.
+//
+// The parameters which are pointers indicate they are optional.  Passing nil
+// for optional parameters will use the default value.
+func NewGetUnconfirmedBalanceCmd(account *string) *GetUnconfirmedBalanceCmd {
+	return &GetUnconfirmedBalanceCmd{
+		Account: account,
+	}
+}
+
 // GetNewAddressCmd defines the getnewaddress JSON-RPC command.
 type GetNewAddressCmd struct {
 	Account *string

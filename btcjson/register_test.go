@@ -12,47 +12,6 @@ import (
 	"github.com/stevenroose/go-bitcoin-core-rpc/btcjson"
 )
 
-// TestUsageFlagStringer tests the stringized output for the UsageFlag type.
-func TestUsageFlagStringer(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		in   btcjson.UsageFlag
-		want string
-	}{
-		{0, "0x0"},
-		{btcjson.UFWalletOnly, "UFWalletOnly"},
-		{btcjson.UFWebsocketOnly, "UFWebsocketOnly"},
-		{btcjson.UFNotification, "UFNotification"},
-		{btcjson.UFWalletOnly | btcjson.UFWebsocketOnly,
-			"UFWalletOnly|UFWebsocketOnly"},
-		{btcjson.UFWalletOnly | btcjson.UFWebsocketOnly | (1 << 31),
-			"UFWalletOnly|UFWebsocketOnly|0x80000000"},
-	}
-
-	// Detect additional usage flags that don't have the stringer added.
-	numUsageFlags := 0
-	highestUsageFlagBit := btcjson.TstHighestUsageFlagBit
-	for highestUsageFlagBit > 1 {
-		numUsageFlags++
-		highestUsageFlagBit >>= 1
-	}
-	if len(tests)-3 != numUsageFlags {
-		t.Errorf("It appears a usage flag was added without adding " +
-			"an associated stringer test")
-	}
-
-	t.Logf("Running %d tests", len(tests))
-	for i, test := range tests {
-		result := test.in.String()
-		if result != test.want {
-			t.Errorf("String #%d\n got: %s want: %s", i, result,
-				test.want)
-			continue
-		}
-	}
-}
-
 // TestRegisterCmdErrors ensures the RegisterCmd function returns the expected
 // error when provided with invalid types.
 func TestRegisterCmdErrors(t *testing.T) {

@@ -732,61 +732,6 @@ func (c *Client) GetTxOut(txHash *chainhash.Hash, index uint32, mempool bool) (*
 	return c.GetTxOutAsync(txHash, index, mempool).Receive()
 }
 
-// FutureRescanBlocksResult is a future promise to deliver the result of a
-// RescanBlocksAsync RPC invocation (or an applicable error).
-//
-// NOTE: This is a btcsuite extension ported from
-// github.com/decred/dcrrpcclient.
-type FutureRescanBlocksResult chan *response
-
-// Receive waits for the response promised by the future and returns the
-// discovered rescanblocks data.
-//
-// NOTE: This is a btcsuite extension ported from
-// github.com/decred/dcrrpcclient.
-func (r FutureRescanBlocksResult) Receive() ([]btcjson.RescannedBlock, error) {
-	res, err := receiveFuture(r)
-	if err != nil {
-		return nil, err
-	}
-
-	var rescanBlocksResult []btcjson.RescannedBlock
-	err = json.Unmarshal(res, &rescanBlocksResult)
-	if err != nil {
-		return nil, err
-	}
-
-	return rescanBlocksResult, nil
-}
-
-// RescanBlocksAsync returns an instance of a type that can be used to get the
-// result of the RPC at some future time by invoking the Receive function on the
-// returned instance.
-//
-// See RescanBlocks for the blocking version and more details.
-//
-// NOTE: This is a btcsuite extension ported from
-// github.com/decred/dcrrpcclient.
-func (c *Client) RescanBlocksAsync(blockHashes []chainhash.Hash) FutureRescanBlocksResult {
-	strBlockHashes := make([]string, len(blockHashes))
-	for i := range blockHashes {
-		strBlockHashes[i] = blockHashes[i].String()
-	}
-
-	cmd := btcjson.NewRescanBlocksCmd(strBlockHashes)
-	return c.sendCmd(cmd)
-}
-
-// RescanBlocks rescans the blocks identified by blockHashes, in order, using
-// the client's loaded transaction filter.  The blocks do not need to be on the
-// main chain, but they do need to be adjacent to each other.
-//
-// NOTE: This is a btcsuite extension ported from
-// github.com/decred/dcrrpcclient.
-func (c *Client) RescanBlocks(blockHashes []chainhash.Hash) ([]btcjson.RescannedBlock, error) {
-	return c.RescanBlocksAsync(blockHashes).Receive()
-}
-
 // FutureInvalidateBlockResult is a future promise to deliver the result of a
 // InvalidateBlockAsync RPC invocation (or an applicable error).
 type FutureInvalidateBlockResult chan *response
