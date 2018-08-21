@@ -11,7 +11,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/btcsuite/btcd/btcjson"
+	"github.com/stevenroose/go-bitcoin-core-rpc/btcjson"
 )
 
 // TestWalletSvrCmds tests all of the wallet server commands marshal and
