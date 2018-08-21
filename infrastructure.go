@@ -241,7 +241,7 @@ func receiveFuture(f chan *response) ([]byte, error) {
 func (c *Client) sendRequest(jReq *jsonRequest) {
 	// Generate a request to the configured RPC server.
 	protocol := "http"
-	if !c.config.DisableTLS {
+	if c.config.EnableTLS {
 		protocol = "https"
 	}
 	url := protocol + "://" + c.config.Host
@@ -374,15 +374,15 @@ type ConnConfig struct {
 	// Pass is the passphrase to use to authenticate to the RPC server.
 	Pass string
 
-	// DisableTLS specifies whether transport layer security should be
-	// disabled.  It is recommended to always use TLS if the RPC server
+	// EnableTLS specifies whether transport layer security should be
+	// enabled.  It is recommended to always use TLS if the RPC server
 	// supports it as otherwise your username and password is sent across
 	// the wire in cleartext.
-	DisableTLS bool
+	EnableTLS bool
 
 	// Certificates are the bytes for a PEM-encoded certificate chain used
-	// for the TLS connection.  It has no effect if the DisableTLS parameter
-	// is true.
+	// for the TLS connection.  It has no effect if the EnableTLS parameter
+	// is false.
 	Certificates []byte
 
 	// Proxy specifies to connect through a SOCKS 5 proxy server.  It may
@@ -398,20 +398,6 @@ type ConnConfig struct {
 	// requires authentication.  It has no effect if the Proxy parameter
 	// is not set.
 	ProxyPass string
-
-	// DisableConnectOnNew specifies that a websocket client connection
-	// should not be tried when creating the client with New.  Instead, the
-	// client is created and returned unconnected, and Connect must be
-	// called manually.
-	DisableConnectOnNew bool
-
-	// HTTPPostMode instructs the client to run using multiple independent
-	// connections issuing HTTP POST requests instead of using the default
-	// of websockets.  Websockets are generally preferred as some of the
-	// features of the client such notifications only work with websockets,
-	// however, not all servers support the websocket extensions, so this
-	// flag can be set to true to use basic HTTP POST requests instead.
-	HTTPPostMode bool
 
 	// EnableBCInfoHacks is an option provided to enable compatibility hacks
 	// when connecting to blockchain.info RPC server
@@ -433,7 +419,7 @@ func newHTTPClient(config *ConnConfig) (*http.Client, error) {
 
 	// Configure TLS if needed.
 	var tlsConfig *tls.Config
-	if !config.DisableTLS {
+	if config.EnableTLS {
 		if len(config.Certificates) > 0 {
 			pool := x509.NewCertPool()
 			pool.AppendCertsFromPEM(config.Certificates)
