@@ -7,7 +7,7 @@ package main
 import (
 	"log"
 
-	"github.com/btcsuite/btcd/rpcclient"
+	rpcclient "github.com/stevenroose/go-bitcoin-core-rpc"
 )
 
 func main() {
@@ -21,7 +21,7 @@ func main() {
 	}
 	// Notice the notification parameter is nil since notifications are
 	// not supported in HTTP POST mode.
-	client, err := rpcclient.New(connCfg, nil)
+	client, err := rpcclient.New(connCfg)
 	if err != nil {
 		log.Fatal(err)
 	}
