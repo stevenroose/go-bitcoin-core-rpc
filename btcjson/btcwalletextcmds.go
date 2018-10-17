@@ -36,6 +36,7 @@ func NewDumpWalletCmd(filename string) *DumpWalletCmd {
 // ImportAddressCmd defines the importaddress JSON-RPC command.
 type ImportAddressCmd struct {
 	Address string
+	Account string
 	Rescan  *bool `jsonrpcdefault:"true"`
 }
 
