@@ -63,6 +63,25 @@ type DecodeScriptResult struct {
 	P2sh      string   `json:"p2sh,omitempty"`
 }
 
+// GetTxOutSetInfoResult models the data returned from the gettxoutsetinfo
+// command.
+type GetTxOutSetInfoResult struct {
+	Height          int32   `json:"height"`
+	BestBlock       string  `json:"bestblock"`
+	Transactions    int32   `json:"transactions"`
+	TxOuts          int32   `json:"txouts"`
+	BytesSerialized int32   `json:"bytes_serialized"`
+	HashSerialized  string  `json:"hash_serialized"`
+	TotalAmount     float64 `json:"total_amount"`
+}
+
+// EstimateSmartFeeResult models the data returned from the estimatesmartfee command.
+type EstimateSmartFeeResult struct {
+	FeeRate *float64  `json:"feerate,omitempty"`
+	Errors  *[]string `json:"errors,omitempty"`
+	Blocks  int       `json:"blocks"`
+}
+
 // GetAddedNodeInfoResultAddr models the data of the addresses portion of the
 // getaddednodeinfo command.
 type GetAddedNodeInfoResultAddr struct {

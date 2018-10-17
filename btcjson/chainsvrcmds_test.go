@@ -80,7 +80,20 @@ func TestChainSvrCmds(t *testing.T) {
 				LockTime: btcjson.Int64(12312333333),
 			},
 		},
-
+		{
+			name: "estimatesmartfee",
+			newCmd: func() (interface{}, error) {
+				return btcjson.NewCmd("estimatesmartfee", 6, btcjson.ConservativeEstimeMode)
+			},
+			staticCmd: func() interface{} {
+				return btcjson.NewEstimateSmartFeeCmd(6, btcjson.ConservativeEstimeMode)
+			},
+			marshalled: `{"jsonrpc":"1.0","method":"estimatesmartfee","params":[6,"CONSERVATIVE"],"id":1}`,
+			unmarshalled: &btcjson.EstimateSmartFeeCmd{
+				ConfTarget:   6,
+				EstimateMode: btcjson.ConservativeEstimeMode,
+			},
+		},
 		{
 			name: "decoderawtransaction",
 			newCmd: func() (interface{}, error) {
@@ -579,6 +592,17 @@ func TestChainSvrCmds(t *testing.T) {
 				Txid:    "123",
 				Verbose: btcjson.Int(1),
 			},
+		},
+		{
+			name: "gettxoutsetinfo",
+			newCmd: func() (interface{}, error) {
+				return btcjson.NewCmd("gettxoutsetinfo")
+			},
+			staticCmd: func() interface{} {
+				return btcjson.NewGetTxOutSetInfoCmd()
+			},
+			marshalled:   `{"jsonrpc":"1.0","method":"gettxoutsetinfo","params":[],"id":1}`,
+			unmarshalled: &btcjson.GetTxOutSetInfoCmd{},
 		},
 		{
 			name: "gettxout",
