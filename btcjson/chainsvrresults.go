@@ -75,6 +75,13 @@ type GetTxOutSetInfoResult struct {
 	TotalAmount     float64 `json:"total_amount"`
 }
 
+// EstimateSmartFeeResult models the data returned from the estimatesmartfee command.
+type EstimateSmartFeeResult struct {
+	FeeRate *float64  `json:"feerate,omitempty"`
+	Errors  *[]string `json:"errors,omitempty"`
+	Blocks  int       `json:"blocks"`
+}
+
 // GetAddedNodeInfoResultAddr models the data of the addresses portion of the
 // getaddednodeinfo command.
 type GetAddedNodeInfoResultAddr struct {
