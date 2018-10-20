@@ -45,6 +45,7 @@ type ImportAddressCmd struct {
 func NewImportAddressCmd(address string, rescan *bool) *ImportAddressCmd {
 	return &ImportAddressCmd{
 		Address: address,
+		Account: "*",
 		Rescan:  rescan,
 	}
 }
