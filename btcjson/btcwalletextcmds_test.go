@@ -58,28 +58,30 @@ func TestBtcWalletExtCmds(t *testing.T) {
 		{
 			name: "importaddress",
 			newCmd: func() (interface{}, error) {
-				return btcjson.NewCmd("importaddress", "1Address")
+				return btcjson.NewCmd("importaddress", "1Address", "*")
 			},
 			staticCmd: func() interface{} {
 				return btcjson.NewImportAddressCmd("1Address", nil)
 			},
-			marshalled: `{"jsonrpc":"1.0","method":"importaddress","params":["1Address"],"id":1}`,
+			marshalled: `{"jsonrpc":"1.0","method":"importaddress","params":["1Address","*"],"id":1}`,
 			unmarshalled: &btcjson.ImportAddressCmd{
 				Address: "1Address",
+				Account: "*",
 				Rescan:  btcjson.Bool(true),
 			},
 		},
 		{
 			name: "importaddress optional",
 			newCmd: func() (interface{}, error) {
-				return btcjson.NewCmd("importaddress", "1Address", false)
+				return btcjson.NewCmd("importaddress", "1Address", "*", false)
 			},
 			staticCmd: func() interface{} {
 				return btcjson.NewImportAddressCmd("1Address", btcjson.Bool(false))
 			},
-			marshalled: `{"jsonrpc":"1.0","method":"importaddress","params":["1Address",false],"id":1}`,
+			marshalled: `{"jsonrpc":"1.0","method":"importaddress","params":["1Address","*",false],"id":1}`,
 			unmarshalled: &btcjson.ImportAddressCmd{
 				Address: "1Address",
+				Account: "*",
 				Rescan:  btcjson.Bool(false),
 			},
 		},
