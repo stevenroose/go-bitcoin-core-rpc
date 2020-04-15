@@ -7,7 +7,7 @@ package rpcclient
 import (
 	"encoding/json"
 
-	"github.com/stevenroose/go-bitcoin-core-rpc/btcjson"
+	"github.com/KiteShi/go-bitcoin-core-rpc/btcjson"
 )
 
 // AddNodeCommand enumerates the available commands that the AddNode function

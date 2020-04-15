@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/stevenroose/go-bitcoin-core-rpc/btcjson"
+	"github.com/KiteShi/go-bitcoin-core-rpc/btcjson"
 )
 
 // TestHelpReflectInternals ensures the various help functions which deal with

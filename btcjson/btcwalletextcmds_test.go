@@ -11,7 +11,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/stevenroose/go-bitcoin-core-rpc/btcjson"
+	"github.com/KiteShi/go-bitcoin-core-rpc/btcjson"
 )
 
 // TestBtcWalletExtCmds tests all of the btcwallet extended commands marshal and

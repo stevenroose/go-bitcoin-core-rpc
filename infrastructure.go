@@ -18,7 +18,7 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/stevenroose/go-bitcoin-core-rpc/btcjson"
+	"github.com/KiteShi/go-bitcoin-core-rpc/btcjson"
 )
 
 var (

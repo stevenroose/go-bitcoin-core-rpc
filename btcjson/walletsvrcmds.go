@@ -82,16 +82,12 @@ func NewEncryptWalletCmd(passphrase string) *EncryptWalletCmd {
 }
 
 // EstimateFeeCmd defines the estimatefee JSON-RPC command.
-type EstimateFeeCmd struct {
-	NumBlocks int64
-}
+type EstimateFeeCmd struct {}
 
 // NewEstimateFeeCmd returns a new instance which can be used to issue a
 // estimatefee JSON-RPC command.
-func NewEstimateFeeCmd(numBlocks int64) *EstimateFeeCmd {
-	return &EstimateFeeCmd{
-		NumBlocks: numBlocks,
-	}
+func NewEstimateFeeCmd() *EstimateFeeCmd {
+	return &EstimateFeeCmd{}
 }
 
 // EstimatePriorityCmd defines the estimatepriority JSON-RPC command.

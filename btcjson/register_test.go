@@ -9,7 +9,7 @@ import (
 	"sort"
 	"testing"
 
-	"github.com/stevenroose/go-bitcoin-core-rpc/btcjson"
+	"github.com/KiteShi/go-bitcoin-core-rpc/btcjson"
 )
 
 // TestRegisterCmdErrors ensures the RegisterCmd function returns the expected

@@ -10,9 +10,9 @@ import (
 	"encoding/hex"
 	"encoding/json"
 
+	"github.com/KiteShi/go-bitcoin-core-rpc/btcjson"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/wire"
-	"github.com/stevenroose/go-bitcoin-core-rpc/btcjson"
 )
 
 // FutureGetBestBlockHashResult is a future promise to deliver the result of a
@@ -623,14 +623,14 @@ func (r FutureEstimateFeeResult) Receive() (float64, error) {
 // returned instance.
 //
 // See EstimateFee for the blocking version and more details.
-func (c *Client) EstimateFeeAsync(numBlocks int64) FutureEstimateFeeResult {
-	cmd := btcjson.NewEstimateFeeCmd(numBlocks)
+func (c *Client) EstimateFeeAsync() FutureEstimateFeeResult {
+	cmd := btcjson.NewEstimateFeeCmd()
 	return c.sendCmd(cmd)
 }
 
 // EstimateFee provides an estimated fee  in bitcoins per kilobyte.
-func (c *Client) EstimateFee(numBlocks int64) (float64, error) {
-	return c.EstimateFeeAsync(numBlocks).Receive()
+func (c *Client) EstimateFee() (float64, error) {
+	return c.EstimateFeeAsync().Receive()
 }
 
 // FutureVerifyChainResult is a future promise to deliver the result of a

@@ -8,7 +8,7 @@ import (
 	"reflect"
 	"testing"
 
-	"github.com/stevenroose/go-bitcoin-core-rpc/btcjson"
+	"github.com/KiteShi/go-bitcoin-core-rpc/btcjson"
 )
 
 // TestHelpers tests the various helper functions which create pointers to

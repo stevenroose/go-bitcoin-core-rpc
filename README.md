@@ -2,7 +2,7 @@ go-bitcoin-core-rpc
 ===================
 
 [![ISC License](http://img.shields.io/badge/license-ISC-blue.svg)](http://copyfree.org)
-[![GoDoc](https://img.shields.io/badge/godoc-reference-blue.svg)](http://godoc.org/github.com/stevenroose/go-bitcoin-core-rpc)
+[![GoDoc](https://img.shields.io/badge/godoc-reference-blue.svg)](http://godoc.org/github.com/KiteShi/go-bitcoin-core-rpc)
 
 rpcclient implements a Bitcoin Core JSON-RPC client package written
 in [Go](http://golang.org/).  It provides a robust and easy to use client for
@@ -16,8 +16,8 @@ implement and the API is not stable yet.
 
 ## Documentation
 
-* [API Reference](http://godoc.org/github.com/stevenroose/go-bitcoin-core-rpc)
-* [Example](https://github.com/stevenroose/go-bitcoin-core-rpc/tree/master/examples)
+* [API Reference](http://godoc.org/github.com/KiteShi/go-bitcoin-core-rpc)
+* [Example](https://github.com/KiteShi/go-bitcoin-core-rpc/tree/master/examples)
   Connects to a bitcoin Core RPC server using HTTP POST mode with TLS disabled
   and gets the current block count.
 
@@ -29,7 +29,7 @@ implement and the API is not stable yet.
 ## Installation
 
 ```bash
-$ go get -u github.com/stevenroose/go-bitcoin-core-rpc
+$ go get -u github.com/KiteShi/go-bitcoin-core-rpc
 ```
 
 ## License

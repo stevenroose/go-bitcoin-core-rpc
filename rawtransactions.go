@@ -9,10 +9,10 @@ import (
 	"encoding/hex"
 	"encoding/json"
 
+	"github.com/KiteShi/go-bitcoin-core-rpc/btcjson"
 	"github.com/btcsuite/btcd/chaincfg/chainhash"
 	"github.com/btcsuite/btcd/wire"
 	"github.com/btcsuite/btcutil"
-	"github.com/stevenroose/go-bitcoin-core-rpc/btcjson"
 )
 
 // SigHashType enumerates the available signature hashing types that the
